@@ -3,7 +3,7 @@ import { Command } from './index.js';
 import { generateJsonResponse } from '../services/ai.js';
 import { SYSTEM_PROMPTS } from '../config/prompts.js';
 import { createBaseEmbed, EMBED_COLORS } from '../utils/embed.js';
-import { truncateCode } from '../utils/formatter.js';
+import { formatCodeBlock } from '../utils/formatter.js';
 import { sendDM } from '../utils/dm.js';
 import { CodeAnalysis } from '../types/index.js';
 
@@ -20,12 +20,12 @@ async function execute(interaction: ChatInputCommandInteraction<CacheType>): Pro
     .addFields(
       {
         name: '📦 Original Code',
-        value: `\`\`\`\n${truncateCode(analysis.oldCode || code, 1000)}\n\`\`\``,
+        value: formatCodeBlock(analysis.oldCode || code),
         inline: false,
       },
       {
         name: '🚀 Optimized Code',
-        value: `\`\`\`\n${truncateCode(analysis.optimizedCode || '', 1000)}\n\`\`\``,
+        value: formatCodeBlock(analysis.optimizedCode || ''),
         inline: false,
       },
       {

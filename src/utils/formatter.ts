@@ -38,30 +38,23 @@ export function detectLanguage(code: string, hint?: string): string {
   }
 }
 
+const DISCORD_CODE_BLOCK_LIMIT = 3900;
+
+export function formatCodeBlock(code: string, hint?: string): string {
+  const lang = detectLanguage(code, hint);
+  const maxContent = DISCORD_CODE_BLOCK_LIMIT - lang.length - 6;
+
+  let content = code;
+  if (content.length > maxContent) {
+    content = content.slice(0, maxContent - 50) + '\n\n// ... truncated (code too long)';
+  }
+
+  return `\`\`\`${lang}\n${content}\n\`\`\``;
+}
+
 export function truncateCode(code: string, maxLength: number = 3900): string {
   if (code.length <= maxLength) return code;
   return code.slice(0, maxLength - 100) + '\n\n// ... truncated (code too long)';
-}
-
-export function formatDiff(oldCode: string, newCode: string): string {
-  const oldLines = oldCode.split('\n');
-  const newLines = newCode.split('\n');
-  const maxLines = Math.max(oldLines.length, newLines.length);
-
-  const lines: string[] = [];
-  for (let i = 0; i < maxLines; i++) {
-    const oldLine = oldLines[i] ?? '';
-    const newLine = newLines[i] ?? '';
-
-    if (oldLine !== newLine) {
-      if (oldLine) lines.push(`- ${oldLine}`);
-      if (newLine) lines.push(`+ ${newLine}`);
-    } else {
-      lines.push(`  ${oldLine}`);
-    }
-  }
-
-  return lines.join('\n');
 }
 
 export function escapeMarkdown(text: string): string {

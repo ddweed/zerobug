@@ -3,7 +3,7 @@ import { Command } from './index.js';
 import { generateJsonResponse } from '../services/ai.js';
 import { SYSTEM_PROMPTS } from '../config/prompts.js';
 import { createBaseEmbed, EMBED_COLORS } from '../utils/embed.js';
-import { truncateCode } from '../utils/formatter.js';
+import { formatCodeBlock } from '../utils/formatter.js';
 import { sendDM } from '../utils/dm.js';
 import { CodeAnalysis } from '../types/index.js';
 
@@ -34,7 +34,7 @@ async function execute(interaction: ChatInputCommandInteraction<CacheType>): Pro
       },
       {
         name: '💻 Generated Code',
-        value: `\`\`\`\n${truncateCode(result.fixedCode || '', 3000)}\n\`\`\``,
+        value: formatCodeBlock(result.fixedCode || ''),
         inline: false,
       }
     );

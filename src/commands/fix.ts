@@ -3,7 +3,7 @@ import { Command } from './index.js';
 import { generateJsonResponse } from '../services/ai.js';
 import { SYSTEM_PROMPTS } from '../config/prompts.js';
 import { createBaseEmbed, EMBED_COLORS } from '../utils/embed.js';
-import { truncateCode } from '../utils/formatter.js';
+import { formatCodeBlock } from '../utils/formatter.js';
 import { sendDM } from '../utils/dm.js';
 import { CodeAnalysis } from '../types/index.js';
 
@@ -29,7 +29,7 @@ async function execute(interaction: ChatInputCommandInteraction<CacheType>): Pro
     .setDescription('**Problem Found**\n' + (analysis.problem || 'No problem detected'))
     .addFields(
       { name: '🔍 Root Cause', value: analysis.rootCause || 'Unknown', inline: false },
-      { name: '✅ Fixed Code', value: `\`\`\`\n${truncateCode(analysis.fixedCode || '')}\n\`\`\``, inline: false },
+      { name: '✅ Fixed Code', value: formatCodeBlock(analysis.fixedCode || ''), inline: false },
       { name: '📖 Explanation', value: analysis.explanation || 'No explanation provided', inline: false }
     );
 
