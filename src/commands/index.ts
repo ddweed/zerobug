@@ -17,6 +17,7 @@ export async function executeCommand(
 ): Promise<void> {
   try {
     await findOrCreateUser(interaction.user.id);
+    const isDM = !interaction.guild;
 
     await interaction.reply({
       embeds: [createBaseEmbed('📬 Processing', EMBED_COLORS.info)
@@ -33,7 +34,7 @@ export async function executeCommand(
 
     await interaction.editReply({
       embeds: [createBaseEmbed('✅ Complete', EMBED_COLORS.success)
-        .setDescription('Check your **DMs** for the result.')],
+        .setDescription(isDM ? 'Done!' : 'Check your **DMs** for the result.')],
     });
   } catch (error: any) {
     logger.error('Command execution error', {
