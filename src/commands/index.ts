@@ -32,10 +32,12 @@ export async function executeCommand(
 
     await handler(interaction);
 
-    await interaction.editReply({
-      embeds: [createBaseEmbed('✅ Complete', EMBED_COLORS.success)
-        .setDescription(isDM ? 'Done!' : 'Check your **DMs** for the result.')],
-    });
+    if (interaction.guild) {
+      await interaction.editReply({
+        embeds: [createBaseEmbed('✅ Complete', EMBED_COLORS.success)
+          .setDescription('Check your **DMs** for the result.')],
+      });
+    }
   } catch (error: any) {
     logger.error('Command execution error', {
       command: interaction.commandName,

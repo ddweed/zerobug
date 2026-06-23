@@ -7,7 +7,7 @@ export async function sendDM(
   content: string | MessagePayload | MessageCreateOptions
 ): Promise<void> {
   if (!interaction.guild) {
-    await interaction.followUp(content as any);
+    await interaction.editReply(content as any);
     return;
   }
 
