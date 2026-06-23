@@ -1,7 +1,7 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { config } from '../config/index.js';
 import { logger } from '../utils/logger.js';
-import ws from 'ws';
+import WebSocket from 'ws';
 
 let supabase: SupabaseClient;
 
@@ -15,7 +15,7 @@ try {
       schema: 'public',
     },
     realtime: {
-      transport: ws,
+      transport: WebSocket as any,
     },
   });
   logger.info('Supabase client initialized');
