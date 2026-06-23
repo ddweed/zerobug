@@ -20,11 +20,21 @@ export async function executeCommand(
 
     await interaction.reply({
       embeds: [createBaseEmbed('📬 Processing', EMBED_COLORS.info)
-        .setDescription('ZeroBug is working on your request. Check your **DMs** for the result.')],
+        .setDescription('ZeroBug is working on your request.')],
       ephemeral: true,
     });
 
+    await interaction.editReply({
+      embeds: [createBaseEmbed('⏳ Analyzing', EMBED_COLORS.info)
+        .setDescription('Running AI analysis...')],
+    });
+
     await handler(interaction);
+
+    await interaction.editReply({
+      embeds: [createBaseEmbed('✅ Complete', EMBED_COLORS.success)
+        .setDescription('Check your **DMs** for the result.')],
+    });
   } catch (error: any) {
     logger.error('Command execution error', {
       command: interaction.commandName,
