@@ -57,7 +57,7 @@ async function deployCommands(): Promise<void> {
   try {
     logger.info('Registering slash commands...');
 
-    const commandData = commands.map(cmd => cmd.toJSON());
+    const commandData = commands.map(cmd => cmd.setDMPermission(true).toJSON());
 
     if (config.DISCORD_GUILD_ID) {
       await rest.put(
