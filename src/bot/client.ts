@@ -38,43 +38,43 @@ client.once('ready', () => {
 });
 
 client.on('interactionCreate', async (interaction) => {
-  if (!interaction.isCommand() && !interaction.isAutocomplete()) return;
+  if (!interaction.isChatInputCommand()) return;
 
-  if (interaction.isCommand()) {
-    const command = commands.get(interaction.commandName);
+  const cmd = interaction;
 
-    if (command) {
-      await executeCommand(interaction, command.execute);
-      return;
-    }
+  const command = commands.get(cmd.commandName);
 
-    switch (interaction.commandName) {
-      case 'help':
-        await handleHelp(interaction);
-        break;
-      case 'ping':
-        await handlePing(interaction);
-        break;
-      case 'usage':
-        await handleUsage(interaction);
-        break;
-      case 'subscribe':
-        await interaction.reply({
-          embeds: [createBaseEmbed('📬 Check your DMs', EMBED_COLORS.info)
-            .setDescription("I sent the subscription info via DM.")],
-          ephemeral: true,
-        });
-        await sendDM(interaction, {
-          embeds: [createBaseEmbed('🎉 Free Forever', EMBED_COLORS.success)
-            .setDescription('ZeroBug is completely **free** to use! All features are available with no limits.\n\nJust use any command like `/fix`, `/review`, `/explain`, `/optimize`, `/generate`, or `/ask` to get started.')],
-        });
-        break;
-      default:
-        await interaction.reply({
-          embeds: [createErrorEmbed('Unknown Command', 'That command does not exist. Use `/help` to see available commands.')],
-          ephemeral: true,
-        });
-    }
+  if (command) {
+    await executeCommand(cmd, command.execute);
+    return;
+  }
+
+  switch (cmd.commandName) {
+    case 'help':
+      await handleHelp(cmd);
+      break;
+    case 'ping':
+      await handlePing(cmd);
+      break;
+    case 'usage':
+      await handleUsage(cmd);
+      break;
+    case 'subscribe':
+      await cmd.reply({
+        embeds: [createBaseEmbed('📬 Check your DMs', EMBED_COLORS.info)
+          .setDescription("I sent the subscription info via DM.")],
+        ephemeral: true,
+      });
+      await sendDM(cmd, {
+        embeds: [createBaseEmbed('🎉 Free Forever', EMBED_COLORS.success)
+          .setDescription('ZeroBug is completely **free** to use! All features are available with no limits.\n\nJust use any command like `/fix`, `/review`, `/explain`, `/optimize`, `/generate`, or `/ask` to get started.')],
+      });
+      break;
+    default:
+      await cmd.reply({
+        embeds: [createErrorEmbed('Unknown Command', 'That command does not exist. Use `/help` to see available commands.')],
+        ephemeral: true,
+      });
   }
 });
 
