@@ -1,11 +1,11 @@
-import { SlashCommandBuilder, CommandInteraction, CacheType } from 'discord.js';
+import { SlashCommandBuilder, ChatInputCommandInteraction, CacheType } from 'discord.js';
 import { Command } from './index.js';
 import { generateSimpleResponse } from '../services/ai.js';
 import { SYSTEM_ASK_PROMPT } from '../config/prompts.js';
 import { createBaseEmbed, EMBED_COLORS } from '../utils/embed.js';
 import { sendDM } from '../utils/dm.js';
 
-async function execute(interaction: CommandInteraction<CacheType>): Promise<void> {
+async function execute(interaction: ChatInputCommandInteraction<CacheType>): Promise<void> {
   const question = interaction.options.getString('question', true);
 
   const answer = await generateSimpleResponse(
@@ -27,7 +27,7 @@ const command: Command = {
       option.setName('question')
         .setDescription('Your coding question')
         .setRequired(true)
-    ),
+    ) as SlashCommandBuilder,
   execute,
 };
 

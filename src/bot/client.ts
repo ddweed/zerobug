@@ -1,4 +1,4 @@
-import { Client, GatewayIntentBits, Partials, Collection, CommandInteraction, CacheType } from 'discord.js';
+import { Client, GatewayIntentBits, Partials, Collection, ChatInputCommandInteraction, CacheType } from 'discord.js';
 import { config } from '../config/index.js';
 import { logger } from '../utils/logger.js';
 import { Command, executeCommand } from '../commands/index.js';
@@ -78,7 +78,7 @@ client.on('interactionCreate', async (interaction) => {
   }
 });
 
-async function handleHelp(interaction: CommandInteraction<CacheType>): Promise<void> {
+async function handleHelp(interaction: ChatInputCommandInteraction<CacheType>): Promise<void> {
   await interaction.reply({
     embeds: [createBaseEmbed('📬 Check your DMs', EMBED_COLORS.info)
       .setDescription('I sent the help guide via DM.')],
@@ -101,7 +101,7 @@ async function handleHelp(interaction: CommandInteraction<CacheType>): Promise<v
   await sendDM(interaction, { embeds: [embed] });
 }
 
-async function handlePing(interaction: CommandInteraction<CacheType>): Promise<void> {
+async function handlePing(interaction: ChatInputCommandInteraction<CacheType>): Promise<void> {
   await interaction.reply({
     embeds: [createBaseEmbed('📬 Check your DMs', EMBED_COLORS.info)
       .setDescription('I sent my ping details via DM.')],
@@ -121,7 +121,7 @@ async function handlePing(interaction: CommandInteraction<CacheType>): Promise<v
   await sendDM(interaction, { embeds: [embed] });
 }
 
-async function handleUsage(interaction: CommandInteraction<CacheType>): Promise<void> {
+async function handleUsage(interaction: ChatInputCommandInteraction<CacheType>): Promise<void> {
   const stats = await getUsageStats(interaction.user.id);
   if (!stats) {
     await interaction.reply({ embeds: [createErrorEmbed('No Data', 'No usage data found.')], ephemeral: true });

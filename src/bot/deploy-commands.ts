@@ -2,7 +2,7 @@ import { REST, Routes, SlashCommandBuilder } from 'discord.js';
 import { config } from '../config/index.js';
 import { logger } from '../utils/logger.js';
 
-const commands: SlashCommandBuilder[] = [
+const commands = [
   new SlashCommandBuilder()
     .setName('fix')
     .setDescription('Debug your code — identify bugs and get fixed code')
@@ -49,7 +49,7 @@ const commands: SlashCommandBuilder[] = [
   new SlashCommandBuilder()
     .setName('help')
     .setDescription('Learn how to use ZeroBug commands'),
-];
+] as SlashCommandBuilder[];
 
 async function deployCommands(): Promise<void> {
   const rest = new REST({ version: '10' }).setToken(config.DISCORD_TOKEN);

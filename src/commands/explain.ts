@@ -1,4 +1,4 @@
-import { SlashCommandBuilder, CommandInteraction, CacheType } from 'discord.js';
+import { SlashCommandBuilder, ChatInputCommandInteraction, CacheType } from 'discord.js';
 import { Command } from './index.js';
 import { generateJsonResponse } from '../services/ai.js';
 import { SYSTEM_PROMPTS } from '../config/prompts.js';
@@ -6,7 +6,7 @@ import { createBaseEmbed, EMBED_COLORS } from '../utils/embed.js';
 import { sendDM } from '../utils/dm.js';
 import { CodeAnalysis } from '../types/index.js';
 
-async function execute(interaction: CommandInteraction<CacheType>): Promise<void> {
+async function execute(interaction: ChatInputCommandInteraction<CacheType>): Promise<void> {
   const code = interaction.options.getString('code', true);
 
   const analysis = await generateJsonResponse<CodeAnalysis>(
@@ -42,7 +42,7 @@ const command: Command = {
       option.setName('code')
         .setDescription('Paste the code you want explained')
         .setRequired(true)
-    ),
+    ) as SlashCommandBuilder,
   execute,
 };
 

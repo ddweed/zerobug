@@ -1,11 +1,10 @@
-import { SlashCommandBuilder, CommandInteraction, CacheType } from 'discord.js';
-import { config } from '../config/index.js';
+import { SlashCommandBuilder, ChatInputCommandInteraction, CacheType } from 'discord.js';
 import { logger } from '../utils/logger.js';
 import { createErrorEmbed, createBaseEmbed, EMBED_COLORS } from '../utils/embed.js';
 import { findOrCreateUser } from '../database/models.js';
 import { sendDM } from '../utils/dm.js';
 
-export type CommandHandler = (interaction: CommandInteraction<CacheType>) => Promise<void>;
+export type CommandHandler = (interaction: ChatInputCommandInteraction<CacheType>) => Promise<void>;
 
 export interface Command {
   data: SlashCommandBuilder;
@@ -13,7 +12,7 @@ export interface Command {
 }
 
 export async function executeCommand(
-  interaction: CommandInteraction<CacheType>,
+  interaction: ChatInputCommandInteraction<CacheType>,
   handler: CommandHandler
 ): Promise<void> {
   try {

@@ -1,9 +1,9 @@
-import { CommandInteraction, CacheType, MessagePayload, MessageCreateOptions } from 'discord.js';
+import { ChatInputCommandInteraction, CacheType, MessagePayload, MessageCreateOptions } from 'discord.js';
 import { logger } from './logger.js';
 import { createBaseEmbed, EMBED_COLORS } from './embed.js';
 
 export async function sendDM(
-  interaction: CommandInteraction<CacheType>,
+  interaction: ChatInputCommandInteraction<CacheType>,
   content: string | MessagePayload | MessageCreateOptions
 ): Promise<void> {
   try {

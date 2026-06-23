@@ -1,4 +1,4 @@
-import { SlashCommandBuilder, CommandInteraction, CacheType } from 'discord.js';
+import { SlashCommandBuilder, ChatInputCommandInteraction, CacheType } from 'discord.js';
 import { Command } from './index.js';
 import { generateJsonResponse } from '../services/ai.js';
 import { SYSTEM_PROMPTS } from '../config/prompts.js';
@@ -7,7 +7,7 @@ import { truncateCode } from '../utils/formatter.js';
 import { sendDM } from '../utils/dm.js';
 import { CodeAnalysis } from '../types/index.js';
 
-async function execute(interaction: CommandInteraction<CacheType>): Promise<void> {
+async function execute(interaction: ChatInputCommandInteraction<CacheType>): Promise<void> {
   const code = interaction.options.getString('code', true);
   const error = interaction.options.getString('error') || 'No error message provided';
   const expected = interaction.options.getString('expected') || '';
@@ -54,7 +54,7 @@ const command: Command = {
       option.setName('expected')
         .setDescription('What did you expect to happen?')
         .setRequired(false)
-    ),
+    ) as SlashCommandBuilder,
   execute,
 };
 

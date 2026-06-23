@@ -1,4 +1,4 @@
-import { SlashCommandBuilder, CommandInteraction, CacheType } from 'discord.js';
+import { SlashCommandBuilder, ChatInputCommandInteraction, CacheType } from 'discord.js';
 import { Command } from './index.js';
 import { generateJsonResponse } from '../services/ai.js';
 import { SYSTEM_PROMPTS } from '../config/prompts.js';
@@ -19,7 +19,7 @@ function scoreToEmoji(score: number): string {
   return '🔧';
 }
 
-async function execute(interaction: CommandInteraction<CacheType>): Promise<void> {
+async function execute(interaction: ChatInputCommandInteraction<CacheType>): Promise<void> {
   const code = interaction.options.getString('code', true);
   const language = interaction.options.getString('language') || '';
 
@@ -80,7 +80,7 @@ const command: Command = {
       option.setName('language')
         .setDescription('Programming language (optional)')
         .setRequired(false)
-    ),
+    ) as SlashCommandBuilder,
   execute,
 };
 
