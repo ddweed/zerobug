@@ -1,5 +1,5 @@
 import { SlashCommandBuilder, ChatInputCommandInteraction, CacheType } from 'discord.js';
-import { Command } from './index.js';
+import { Command, CommandResult } from './index.js';
 import { generateJsonResponse } from '../services/ai.js';
 import { SYSTEM_PROMPTS } from '../config/prompts.js';
 import { createBaseEmbed, EMBED_COLORS } from '../utils/embed.js';
@@ -7,7 +7,7 @@ import { formatCodeBlock } from '../utils/formatter.js';
 import { sendDM } from '../utils/dm.js';
 import { CodeAnalysis } from '../types/index.js';
 
-async function execute(interaction: ChatInputCommandInteraction<CacheType>): Promise<void> {
+async function execute(interaction: ChatInputCommandInteraction<CacheType>): Promise<CommandResult | void> {
   const prompt = interaction.options.getString('prompt', true);
   const language = interaction.options.getString('language') || '';
   const details = interaction.options.getString('details') || '';
@@ -48,6 +48,13 @@ async function execute(interaction: ChatInputCommandInteraction<CacheType>): Pro
   }
 
   await sendDM(interaction, { embeds: [embed] });
+
+  return {
+    input: prompt,
+    output: result.fixedCode || result.explanation,
+    systemPrompt: SYSTEM_PROMPTS.generate,
+    userMessage,
+  };
 }
 
 const command: Command = {

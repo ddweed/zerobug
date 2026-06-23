@@ -1,5 +1,5 @@
 import { SlashCommandBuilder, ChatInputCommandInteraction, CacheType } from 'discord.js';
-import { Command } from './index.js';
+import { Command, CommandResult } from './index.js';
 import { generateJsonResponse } from '../services/ai.js';
 import { SYSTEM_PROMPTS } from '../config/prompts.js';
 import { createBaseEmbed, EMBED_COLORS } from '../utils/embed.js';
@@ -19,7 +19,7 @@ function scoreToEmoji(score: number): string {
   return '🔧';
 }
 
-async function execute(interaction: ChatInputCommandInteraction<CacheType>): Promise<void> {
+async function execute(interaction: ChatInputCommandInteraction<CacheType>): Promise<CommandResult | void> {
   const code = interaction.options.getString('code', true);
   const language = interaction.options.getString('language') || '';
 
@@ -65,6 +65,13 @@ async function execute(interaction: ChatInputCommandInteraction<CacheType>): Pro
     );
 
   await sendDM(interaction, { embeds: [embed] });
+
+  return {
+    input: code,
+    output: `Score: ${score}/10. ${analysis.suggestions?.join('; ')}`,
+    systemPrompt: SYSTEM_PROMPTS.review,
+    userMessage,
+  };
 }
 
 const command: Command = {

@@ -1,10 +1,12 @@
-import { Client, GatewayIntentBits, Partials, Collection, ChatInputCommandInteraction, CacheType } from 'discord.js';
+import { Client, GatewayIntentBits, Partials, Collection, ChatInputCommandInteraction, CacheType, Message } from 'discord.js';
 import { config } from '../config/index.js';
 import { logger } from '../utils/logger.js';
 import { Command, executeCommand } from '../commands/index.js';
 import { createBaseEmbed, EMBED_COLORS, createErrorEmbed } from '../utils/embed.js';
 import { sendDM } from '../utils/dm.js';
-import { getUsageStats } from '../database/models.js';
+import { getUsageStats, saveDebugHistory } from '../database/models.js';
+import { getContext, setContext } from '../utils/context.js';
+import { generateSimpleResponse } from '../services/ai.js';
 
 import fixCommand from '../commands/fix.js';
 import reviewCommand from '../commands/review.js';
@@ -35,6 +37,47 @@ client.once('ready', () => {
   logger.info(`🤖 ZeroBug is online as ${client.user?.tag}`);
   logger.info(`🌐 Serving ${client.guilds.cache.size} guilds`);
   client.user?.setActivity('/help | ZeroBug AI', { type: 3 });
+});
+
+client.on('messageCreate', async (message: Message) => {
+  if (message.guild || message.author.bot) return;
+  if (message.author.id === client.user?.id) return;
+  if (!message.reference?.messageId) return;
+
+  const refMsg = await message.channel.messages.fetch(message.reference.messageId).catch(() => null);
+  if (!refMsg || refMsg.author.id !== client.user?.id) return;
+
+  const ctx = getContext(message.author.id);
+  if (!ctx) {
+    await message.reply('Use a command like `/ask` first, then reply to follow up.');
+    return;
+  }
+
+  const followUpPrompt = `Previous conversation context:
+Command: ${ctx.command}
+User's original request: ${ctx.userMessage}
+Your previous response: ${ctx.response}
+
+The user is replying to your previous response with:
+${message.content}
+
+Continue the conversation. Answer the user's follow-up question based on the context above.`;
+
+  try {
+    await message.channel.sendTyping();
+    const answer = await generateSimpleResponse(ctx.systemPrompt, followUpPrompt);
+    await message.reply(answer.length > 1900 ? answer.substring(0, 1900) + '...' : answer);
+
+    setContext(message.author.id, {
+      ...ctx,
+      userMessage: followUpPrompt,
+      response: answer,
+      timestamp: Date.now(),
+    });
+  } catch (error: any) {
+    logger.error('Follow-up error', { user: message.author.id, error: error.message });
+    await message.reply('Sorry, I ran into an error processing your follow-up. Please try again.');
+  }
 });
 
 client.on('interactionCreate', async (interaction) => {

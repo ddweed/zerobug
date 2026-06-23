@@ -1,10 +1,19 @@
 import { SlashCommandBuilder, ChatInputCommandInteraction, CacheType } from 'discord.js';
 import { logger } from '../utils/logger.js';
 import { createErrorEmbed, createBaseEmbed, EMBED_COLORS } from '../utils/embed.js';
-import { findOrCreateUser } from '../database/models.js';
+import { findOrCreateUser, saveDebugHistory } from '../database/models.js';
 import { sendDM } from '../utils/dm.js';
+import { setContext } from '../utils/context.js';
 
-export type CommandHandler = (interaction: ChatInputCommandInteraction<CacheType>) => Promise<void>;
+export interface CommandResult {
+  input?: string;
+  error?: string;
+  output?: string;
+  systemPrompt?: string;
+  userMessage?: string;
+}
+
+export type CommandHandler = (interaction: ChatInputCommandInteraction<CacheType>) => Promise<CommandResult | void>;
 
 export interface Command {
   data: SlashCommandBuilder;
@@ -30,7 +39,21 @@ export async function executeCommand(
         .setDescription('Running AI analysis...')],
     });
 
-    await handler(interaction);
+    const result = (await handler(interaction)) || {};
+
+    if (result.output) {
+      saveDebugHistory(interaction.user.id, interaction.commandName, result.input, result.error, result.output).catch(() => {});
+    }
+
+    if (result.systemPrompt && result.userMessage && result.output) {
+      setContext(interaction.user.id, {
+        command: interaction.commandName,
+        systemPrompt: result.systemPrompt,
+        userMessage: result.userMessage,
+        response: result.output,
+        timestamp: Date.now(),
+      });
+    }
 
     if (interaction.guild) {
       await interaction.editReply({

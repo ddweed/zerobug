@@ -1,12 +1,12 @@
 import { SlashCommandBuilder, ChatInputCommandInteraction, CacheType } from 'discord.js';
-import { Command } from './index.js';
+import { Command, CommandResult } from './index.js';
 import { generateJsonResponse } from '../services/ai.js';
 import { SYSTEM_PROMPTS } from '../config/prompts.js';
 import { createBaseEmbed, EMBED_COLORS } from '../utils/embed.js';
 import { sendDM } from '../utils/dm.js';
 import { CodeAnalysis } from '../types/index.js';
 
-async function execute(interaction: ChatInputCommandInteraction<CacheType>): Promise<void> {
+async function execute(interaction: ChatInputCommandInteraction<CacheType>): Promise<CommandResult | void> {
   const code = interaction.options.getString('code', true);
 
   const analysis = await generateJsonResponse<CodeAnalysis>(
@@ -32,6 +32,13 @@ async function execute(interaction: ChatInputCommandInteraction<CacheType>): Pro
     );
 
   await sendDM(interaction, { embeds: [embed] });
+
+  return {
+    input: code,
+    output: analysis.explanation || analysis.purpose,
+    systemPrompt: SYSTEM_PROMPTS.explain,
+    userMessage,
+  };
 }
 
 const command: Command = {
