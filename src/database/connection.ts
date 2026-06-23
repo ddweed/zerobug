@@ -1,6 +1,7 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { config } from '../config/index.js';
 import { logger } from '../utils/logger.js';
+import ws from 'ws';
 
 let supabase: SupabaseClient;
 
@@ -12,6 +13,9 @@ try {
     },
     db: {
       schema: 'public',
+    },
+    realtime: {
+      transport: ws,
     },
   });
   logger.info('Supabase client initialized');
