@@ -25,4 +25,4 @@ USER zerobug
 
 ENV NODE_ENV=production
 
-CMD ["node", "dist/index.js"]
+CMD node dist/bot/deploy-commands.js && node dist/index.js
