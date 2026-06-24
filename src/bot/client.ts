@@ -64,7 +64,7 @@ ${message.content}
 Continue the conversation. Answer the user's follow-up question based on the context above.`;
 
   try {
-    if (message.channel.isTextBased()) await message.channel.sendTyping();
+    await (message.channel as any).sendTyping();
     const answer = await generateSimpleResponse(ctx.systemPrompt, followUpPrompt);
     await message.reply(answer.length > 1900 ? answer.substring(0, 1900) + '...' : answer);
 
