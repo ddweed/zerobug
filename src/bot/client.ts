@@ -130,6 +130,7 @@ async function handleHelp(interaction: ChatInputCommandInteraction<CacheType>): 
         { name: '📖 `/explain`', value: 'Get a beginner-friendly code explanation', inline: false },
         { name: '🛠️ `/generate`', value: 'Generate production-ready code from a prompt', inline: false },
         { name: '💬 `/ask`', value: 'Ask any coding question to your AI mentor', inline: false },
+        { name: '🔁 Reply-to-Bot', value: 'Reply to any bot DM to continue the conversation as a follow-up', inline: false },
         { name: '📊 `/usage`', value: 'Check your daily usage and plan', inline: false },
         { name: '🏓 `/ping`', value: 'Check bot latency', inline: false }
       )],
