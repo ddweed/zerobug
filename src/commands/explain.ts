@@ -9,9 +9,11 @@ import { CodeAnalysis } from '../types/index.js';
 async function execute(interaction: ChatInputCommandInteraction<CacheType>): Promise<CommandResult | void> {
   const code = interaction.options.getString('code', true);
 
+  const userMessage = `## Code to Explain\n\`\`\`\n${code}\n\`\`\``;
+
   const analysis = await generateJsonResponse<CodeAnalysis>(
     SYSTEM_PROMPTS.explain,
-    `## Code to Explain\n\`\`\`\n${code}\n\`\`\``
+    userMessage
   );
 
   const embed = createBaseEmbed('📖 Code Explanation', EMBED_COLORS.info)

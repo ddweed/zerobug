@@ -10,9 +10,11 @@ import { CodeAnalysis } from '../types/index.js';
 async function execute(interaction: ChatInputCommandInteraction<CacheType>): Promise<CommandResult | void> {
   const code = interaction.options.getString('code', true);
 
+  const userMessage = `## Code to Optimize\n\`\`\`\n${code}\n\`\`\``;
+
   const analysis = await generateJsonResponse<CodeAnalysis>(
     SYSTEM_PROMPTS.optimize,
-    `## Code to Optimize\n\`\`\`\n${code}\n\`\`\``
+    userMessage
   );
 
   const embed = createBaseEmbed('⚡ Code Optimization', EMBED_COLORS.primary)
