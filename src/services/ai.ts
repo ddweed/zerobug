@@ -87,6 +87,10 @@ export async function generateJsonResponse<T>(
     temperature: 0.2,
   });
 
+  if (!response.content) {
+    throw new Error('AI returned an empty response. Please try again.');
+  }
+
   try {
     const parsed = JSON.parse(response.content) as T;
     return parsed;

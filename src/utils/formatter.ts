@@ -38,15 +38,21 @@ export function detectLanguage(code: string, hint?: string): string {
   }
 }
 
-const DISCORD_CODE_BLOCK_LIMIT = 3900;
+const DISCORD_FIELD_LIMIT = 1024;
+
+export function truncateField(value: string, maxLength: number = DISCORD_FIELD_LIMIT): string {
+  if (value.length <= maxLength) return value;
+  return value.slice(0, maxLength - 3) + '...';
+}
 
 export function formatCodeBlock(code: string, hint?: string): string {
   const lang = detectLanguage(code, hint);
-  const maxContent = DISCORD_CODE_BLOCK_LIMIT - lang.length - 6;
+  const overhead = lang.length + 8;
+  const maxContent = DISCORD_FIELD_LIMIT - overhead;
 
   let content = code;
   if (content.length > maxContent) {
-    content = content.slice(0, maxContent - 50) + '\n\n// ... truncated (code too long)';
+    content = content.slice(0, Math.max(0, maxContent - 50)) + '\n\n// ... truncated (code too long)';
   }
 
   return `\`\`\`${lang}\n${content}\n\`\`\``;

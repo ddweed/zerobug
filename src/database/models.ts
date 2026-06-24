@@ -18,6 +18,14 @@ export async function findOrCreateUser(discordId: string): Promise<UserData> {
     .single();
 
   if (error) {
+    if (error.code === '23505') {
+      const { data: retry } = await supabase
+        .from('users')
+        .select('*')
+        .eq('discord_id', discordId)
+        .single();
+      if (retry) return retry as unknown as UserData;
+    }
     logger.error('Failed to create user', { discordId, error: error.message });
     throw new Error('Failed to create user');
   }

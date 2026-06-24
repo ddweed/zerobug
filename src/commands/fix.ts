@@ -3,7 +3,7 @@ import { Command, CommandResult } from './index.js';
 import { generateJsonResponse } from '../services/ai.js';
 import { SYSTEM_PROMPTS } from '../config/prompts.js';
 import { createBaseEmbed, EMBED_COLORS } from '../utils/embed.js';
-import { formatCodeBlock } from '../utils/formatter.js';
+import { formatCodeBlock, truncateField } from '../utils/formatter.js';
 import { sendDM } from '../utils/dm.js';
 import { CodeAnalysis } from '../types/index.js';
 
@@ -26,11 +26,11 @@ async function execute(interaction: ChatInputCommandInteraction<CacheType>): Pro
   );
 
   const embed = createBaseEmbed('🐛 Bug Fix Analysis', EMBED_COLORS.primary)
-    .setDescription('**Problem Found**\n' + (analysis.problem || 'No problem detected'))
+    .setDescription(truncateField('**Problem Found**\n' + (analysis.problem || 'No problem detected'), 4096))
     .addFields(
-      { name: '🔍 Root Cause', value: analysis.rootCause || 'Unknown', inline: false },
+      { name: '🔍 Root Cause', value: truncateField(analysis.rootCause || 'Unknown'), inline: false },
       { name: '✅ Fixed Code', value: formatCodeBlock(analysis.fixedCode || ''), inline: false },
-      { name: '📖 Explanation', value: analysis.explanation || 'No explanation provided', inline: false }
+      { name: '📖 Explanation', value: truncateField(analysis.explanation || 'No explanation provided'), inline: false }
     );
 
   await sendDM(interaction, { embeds: [embed] });

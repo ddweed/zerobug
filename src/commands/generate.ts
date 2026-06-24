@@ -3,7 +3,7 @@ import { Command, CommandResult } from './index.js';
 import { generateJsonResponse } from '../services/ai.js';
 import { SYSTEM_PROMPTS } from '../config/prompts.js';
 import { createBaseEmbed, EMBED_COLORS } from '../utils/embed.js';
-import { formatCodeBlock } from '../utils/formatter.js';
+import { formatCodeBlock, truncateField } from '../utils/formatter.js';
 import { sendDM } from '../utils/dm.js';
 import { CodeAnalysis } from '../types/index.js';
 
@@ -25,11 +25,11 @@ async function execute(interaction: ChatInputCommandInteraction<CacheType>): Pro
   );
 
   const embed = createBaseEmbed('🛠️ Code Generation', EMBED_COLORS.primary)
-    .setDescription(result.explanation || `Generated code for: **${prompt}**`)
+    .setDescription(truncateField(result.explanation || `Generated code for: **${prompt}**`, 4096))
     .addFields(
       {
         name: '📁 Structure',
-        value: result.folderStructure || 'Single file',
+        value: truncateField(result.folderStructure || 'Single file'),
         inline: false,
       },
       {
@@ -42,7 +42,7 @@ async function execute(interaction: ChatInputCommandInteraction<CacheType>): Pro
   if (result.suggestions?.length) {
     embed.addFields({
       name: '💡 Tips',
-      value: result.suggestions.map((s, i) => `${i + 1}. ${s}`).join('\n'),
+      value: truncateField(result.suggestions.map((s, i) => `${i + 1}. ${s}`).join('\n')),
       inline: false,
     });
   }

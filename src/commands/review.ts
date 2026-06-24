@@ -4,6 +4,7 @@ import { generateJsonResponse } from '../services/ai.js';
 import { SYSTEM_PROMPTS } from '../config/prompts.js';
 import { createBaseEmbed, EMBED_COLORS } from '../utils/embed.js';
 import { sendDM } from '../utils/dm.js';
+import { truncateField } from '../utils/formatter.js';
 import { CodeAnalysis } from '../types/index.js';
 
 function scoreToColor(score: number): number {
@@ -43,21 +44,21 @@ async function execute(interaction: ChatInputCommandInteraction<CacheType>): Pro
     .addFields(
       {
         name: '✅ Strengths',
-        value: (analysis.strengths?.length
+        value: truncateField(analysis.strengths?.length
           ? analysis.strengths.map((s, i) => `${i + 1}. ${s}`).join('\n')
           : 'None identified'),
         inline: false,
       },
       {
         name: '⚠️ Weaknesses',
-        value: (analysis.weaknesses?.length
+        value: truncateField(analysis.weaknesses?.length
           ? analysis.weaknesses.map((w, i) => `${i + 1}. ${w}`).join('\n')
           : 'None identified'),
         inline: false,
       },
       {
         name: '💡 Suggestions',
-        value: (analysis.suggestions?.length
+        value: truncateField(analysis.suggestions?.length
           ? analysis.suggestions.map((s, i) => `${i + 1}. ${s}`).join('\n')
           : 'No suggestions'),
         inline: false,

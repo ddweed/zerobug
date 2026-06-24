@@ -4,6 +4,7 @@ import { generateJsonResponse } from '../services/ai.js';
 import { SYSTEM_PROMPTS } from '../config/prompts.js';
 import { createBaseEmbed, EMBED_COLORS } from '../utils/embed.js';
 import { sendDM } from '../utils/dm.js';
+import { truncateField } from '../utils/formatter.js';
 import { CodeAnalysis } from '../types/index.js';
 
 async function execute(interaction: ChatInputCommandInteraction<CacheType>): Promise<CommandResult | void> {
@@ -17,18 +18,18 @@ async function execute(interaction: ChatInputCommandInteraction<CacheType>): Pro
   );
 
   const embed = createBaseEmbed('📖 Code Explanation', EMBED_COLORS.info)
-    .setDescription(analysis.purpose || 'Code analysis')
+    .setDescription(truncateField(analysis.purpose || 'Code analysis', 4096))
     .addFields(
       {
         name: '🔍 Line-by-Line Breakdown',
-        value: analysis.lineByLine?.length
+        value: truncateField(analysis.lineByLine?.length
           ? analysis.lineByLine.map((l, i) => `**${i + 1}.** ${l}`).join('\n')
-          : 'Breakdown unavailable',
+          : 'Breakdown unavailable'),
         inline: false,
       },
       {
         name: '📖 Full Explanation',
-        value: analysis.explanation || 'No explanation available',
+        value: truncateField(analysis.explanation || 'No explanation available'),
         inline: false,
       }
     );

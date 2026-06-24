@@ -16,14 +16,10 @@ const envSchema = z.object({
   SUPABASE_URL: z.string().min(1, 'SUPABASE_URL is required'),
   SUPABASE_SERVICE_KEY: z.string().min(1, 'SUPABASE_SERVICE_KEY is required'),
 
-  REDIS_URL: z.string().default('redis://localhost:6379'),
-
-  BOT_PREFIX: z.string().default('zb'),
   BOT_VERSION: z.string().default('1.0.0'),
   NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
 
   PORT: z.coerce.number().default(3000),
-  WEBHOOK_URL: z.string().optional(),
 });
 
 const parsed = envSchema.safeParse(process.env);

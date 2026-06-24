@@ -4,6 +4,7 @@ import { generateSimpleResponse } from '../services/ai.js';
 import { SYSTEM_ASK_PROMPT } from '../config/prompts.js';
 import { createBaseEmbed, EMBED_COLORS } from '../utils/embed.js';
 import { sendDM } from '../utils/dm.js';
+import { truncateField } from '../utils/formatter.js';
 
 async function execute(interaction: ChatInputCommandInteraction<CacheType>): Promise<CommandResult | void> {
   const question = interaction.options.getString('question', true);
@@ -14,7 +15,7 @@ async function execute(interaction: ChatInputCommandInteraction<CacheType>): Pro
   );
 
   const embed = createBaseEmbed('💬 ZeroBug AI', EMBED_COLORS.info)
-    .setDescription(answer.length > 4000 ? answer.substring(0, 4000) + '...' : answer);
+    .setDescription(truncateField(answer, 4096));
 
   await sendDM(interaction, { embeds: [embed] });
 

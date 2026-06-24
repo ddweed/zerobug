@@ -29,14 +29,9 @@ export async function executeCommand(
     const isDM = !interaction.guild;
 
     await interaction.reply({
-      embeds: [createBaseEmbed('📬 Processing', EMBED_COLORS.info)
-        .setDescription('ZeroBug is working on your request.')],
-      ephemeral: isDM ? false : true,
-    });
-
-    await interaction.editReply({
       embeds: [createBaseEmbed('⏳ Analyzing', EMBED_COLORS.info)
         .setDescription('Running AI analysis...')],
+      ephemeral: isDM ? false : true,
     });
 
     const result = (await handler(interaction)) || {};
