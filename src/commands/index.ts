@@ -31,7 +31,7 @@ export async function executeCommand(
     await interaction.reply({
       embeds: [createBaseEmbed('📬 Processing', EMBED_COLORS.info)
         .setDescription('ZeroBug is working on your request.')],
-      ephemeral: true,
+      ephemeral: isDM ? false : true,
     });
 
     await interaction.editReply({
